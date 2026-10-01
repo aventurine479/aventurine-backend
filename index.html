@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aventurine and Co Beverly Hills - Demande d'adhésion</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f9f9f9; padding: 20px; display: flex; justify-content: center; }
+    .form-container { background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); max-width: 400px; width: 100%; }
+    h2 { margin-bottom: 20px; color: #333; text-align: center; }
+    input, textarea, button { width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+    button { background-color: #007bff; color: white; font-weight: bold; border: none; cursor: pointer; }
+    button:hover { background-color: #0056b3; }
+  </style>
+</head>
+<body>
+
+  <div class="form-container">
+    <h2>Demande d'adhésion</h2>
+    <form id="formulaire-adhesion" onsubmit="envoyerDemandeAdhesion(event)">
+      <input type="text" id="nom" placeholder="Votre nom complet" required>
+      <input type="tel" id="telephone" placeholder="Téléphone / WhatsApp" required>
+      <input type="text" id="localisation" placeholder="Votre ville / pays" required>
+      <textarea id="introduction" placeholder="Présentation / Motivations" rows="4" required></textarea>
+      
+      <button type="submit">Envoyer la demande</button>
+    </form>
+  </div>
+
+  <script>
+  async function envoyerDemandeAdhesion(event) {
+    event.preventDefault();
+
+    const formData = {
+      nom: document.getElementById('nom').value,
+      telephone: document.getElementById('telephone').value,
+      localisation: document.getElementById('localisation').value,
+      introduction: document.getElementById('introduction').value
+    };
+
+    try {
+      const response = await fetch('https://aventurine-backend.onrender.com/api/demande-adhesion', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        alert('Succès : ' + result.message);
+        document.getElementById('formulaire-adhesion').reset();
+      } else {
+        alert('Erreur : ' + (result.error || 'Erreur lors de l’envoi.'));
+      }
+    } catch (error) {
+      console.error('Erreur lors de l’envoi :', error);
+      alert('Une erreur réseau est survenue. Veuillez réinstaller ou réessayer plus tard.');
+    }
+  }
+  </script>
+
+</body>
+</html>
